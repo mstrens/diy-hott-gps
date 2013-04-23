@@ -1,3 +1,1 @@
-Wiring
-
 https://diy-hott-gps.googlecode.com/svn/diygps.PNG
