@@ -1,1 +1,1 @@
-https://code.google.com/p/diy-hott-gps/source/browse/wiki/images/diygps.PNG
+https://diy-hott-gps.googlecode.com/svn/wiki/images/diygps.PNG
