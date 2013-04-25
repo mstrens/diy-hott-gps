@@ -30,6 +30,7 @@ struct {
   uint8_t  GPS_flightDirection;
   uint16_t GPS_distanceToHome;
   uint8_t  GPS_directionToHome;
+  uint8_t  GPS_alarmTone;
   
 } MultiHoTTModule;
 
@@ -37,15 +38,12 @@ struct {
 
 void setup() {
   
-  #ifdef DEBUG
-  mySerial.begin(19200);
-  #endif
   pinMode(LED, OUTPUT);
   delay(200);
 
   Serial.begin(57600);
   delay(200);
-  //Serial.println("$PMTK300,250,0,0,0,0*2A");  //   println haengt ein cr, nl an  
+  //Serial.println("$PMTK300,250,0,0,0,0*2A");  //   init GPS
   delay(100);
   
   is_set_home = 0;
@@ -70,8 +68,8 @@ void toggle_LED(){
 
 void loop() {
 
-  //Variablen fuers GPS-Funktionen
-  unsigned long speed_k; // Hundertstel Koten 
+  //Variables for GPS-Functions
+  unsigned long speed_k; // Knots * 100
   long lat, lon;
   float flat, flon, alt;
   unsigned long age, dat, tim, ui_course;
@@ -94,43 +92,41 @@ void loop() {
    ui_course = gps.course()/100;
    speed_k = gps.speed(); 
    
-   if ((now - last) > 1000) //jede Sekunde 1 Messung fuer's Vario
+   if ((now - last) > 1000) //measure every second for Vario function
    {  
      last = now;
      p_alt[3] = p_alt[2];
      p_alt[2] = p_alt[1];
      p_alt[1] = p_alt[0];
-     p_alt[0] = alt+500;     //hier wird die aktuelle Messung gespeichert
+     p_alt[0] = alt+500;     
    }
    
-   //Homeposition setzen
-   if (is_set_home == 0 && numsat >= 5)  // Wenn noch nicht gesetzt und mehr als 5 Sat. in Sicht
+   //set homeposition
+   if (is_set_home == 0 && numsat >= 5)  // we need more than 5 sats
    {
        
        HOME_LAT = flat;
-	   HOME_LON = flon;
-	   //in Zukunft Starthoehe mittels BMP085 setzen
-       start_height = alt;
-	   
-	   if (start_height < 10000)		//Problem mit hoehe
+       HOME_LON = flon;
+       start_height = alt;	   //in future height will be set with BMP085
+
+	   if ((gps.altitude()/100) != 9999999)	
 	   {
-		is_set_home = 1; //true
+		is_set_home = 1;
 	   }	
-        
    }  
    
+   MultiHoTTModule.GPS_fix       = 1;       
+   MultiHoTTModule.GPS_numSat    = numsat;  //Satellites in view
+   MultiHoTTModule.GPS_latitude  = lat;     //Geograph. Latitude
+   MultiHoTTModule.GPS_longitude = lon;     //Geograph. Longitude
+   MultiHoTTModule.GPS_speed     = (speed_k * 1852) / 100000; // from GPS in Knots*100 -> km/h
+   MultiHoTTModule.GPS_altitude = alt+500-start_height;  // from GPS in cm, +500m Offset for Hott   
+   MultiHoTTModule.GPS_distanceToHome = gps.distance_between(flat, flon, HOME_LAT, HOME_LON); //calculation of distance to home
+   MultiHoTTModule.GPS_directionToHome = gps.course_to(HOME_LAT, HOME_LON, lat, lon) / 2; //calculation of bearing from home to plane
+   MultiHoTTModule.GPS_flightDirection = ui_course/2;   //flightcourse of the plane
    
-   MultiHoTTModule.GPS_fix       = 1;       //Haben wir einen fix?
-   MultiHoTTModule.GPS_numSat    = numsat;  //Satelliten in Sicht
-   MultiHoTTModule.GPS_latitude  = lat;     //Geograph. Breitengrad
-   MultiHoTTModule.GPS_longitude = lon;     //Geograph. Laengengrad
-   MultiHoTTModule.GPS_speed     = (speed_k * 1852) / 100000; // vom GPS in Knoten/100 -> km/h
-   MultiHoTTModule.GPS_altitude = alt+500-start_height;  // vom GPS in cm, +500m Offset für Hott   
-   MultiHoTTModule.GPS_distanceToHome = gps.distance_between(flat, flon, HOME_LAT, HOME_LON);
-   MultiHoTTModule.GPS_directionToHome = gps.course_to(HOME_LAT, HOME_LON, lat, lon) / 2;
-   MultiHoTTModule.GPS_flightDirection = ui_course/2;   
  }
 
-  // Daten senden
+  // send data
   hottV4SendTelemetry();
 }
