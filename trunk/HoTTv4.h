@@ -58,9 +58,9 @@ struct {
   uint8_t sensorTextID;            /* Byte 4: 160 0xA0 Sensor ID Neu! */
   uint8_t alarmInverse1;           /* Byte 5: 01 inverse status */
   uint8_t alarmInverse2;           /* Byte 6: 00 inverse status status 1 = kein GPS Signal */
-  uint8_t flightDirection;         /* Byte 7: 119 = Flugricht./dir. 1 = 2°; 0° (North), 9 0° (East), 180° (South), 270° (West) */
-  uint8_t GPSSpeedLow;             /* Byte 8: 8 = Geschwindigkeit/GPS speed low byte 8km/h */
-  uint8_t GPSSpeedHigh;            /* Byte 9: 0 = Geschwindigkeit/GPS speed high byte */
+  uint8_t flightDirection;         /* Byte 7: 119 = Flightdir./dir. 1 = 2°; 0° (North), 9 0° (East), 180° (South), 270° (West) */
+  uint8_t GPSSpeedLow;             /* Byte 8: 8 = /GPS speed low byte 8km/h */
+  uint8_t GPSSpeedHigh;            /* Byte 9: 0 = /GPS speed high byte */
   
   uint8_t LatitudeNS;              /* Byte 10: 000 = N = 48°39’988 */
   uint8_t LatitudeMinLow;          /* Byte 11: 231 0xE7 = 0x12E7 = 4839 */
@@ -74,10 +74,10 @@ struct {
   uint8_t longitudeSecLow;         /* Byte 18: 056 144 = 0x90 0x2490 = 9360*/
   uint8_t longitudeSecHigh;        /* Byte 19: 004 36 = 0x24 */
   
-  uint8_t distanceLow;             /* Byte 20: 027 123 = Entfernung/distance low byte 6 = 6 m */
-  uint8_t distanceHigh;            /* Byte 21: 036 35 = Entfernung/distance high byte */
-  uint8_t altitudeLow;             /* Byte 22: 243 244 = Höhe/Altitude low byte 500 = 0m */
-  uint8_t altitudeHigh;            /* Byte 23: 001 1 = Höhe/Altitude high byte */
+  uint8_t distanceLow;             /* Byte 20: 027 123 = /distance low byte 6 = 6 m */
+  uint8_t distanceHigh;            /* Byte 21: 036 35 = /distance high byte */
+  uint8_t altitudeLow;             /* Byte 22: 243 244 = /Altitude low byte 500 = 0m */
+  uint8_t altitudeHigh;            /* Byte 23: 001 1 = /Altitude high byte */
   uint8_t resolutionLow;           /* Byte 24: 48 = Low Byte m/s resolution 0.01m 48 = 30000 = 0.00m/s (1=0.01m/s) */
   uint8_t resolutionHigh;          /* Byte 25: 117 = High Byte m/s resolution 0.01m */
   uint8_t unknow1;                 /* Byte 26: 120 = 0m/3s */

@@ -32,7 +32,6 @@ static inline void hottV4EnableTransmitterMode() {
 
 /**
  * Writes out given byte to HoTT serial interface.
- * If in debug mode, data is also written to UART serial interface.
  */
 static void hottV4SerialWrite(uint8_t c) {
   hottV4Serial.write(c);
@@ -78,15 +77,17 @@ static void hottV4SerialWrite(uint8_t c) {
       HoTTV4GPSModule.altitudeHigh = MultiHoTTModule.GPS_altitude >> 8;
       /** Home Direction */
       HoTTV4GPSModule.HomeDirection = MultiHoTTModule.GPS_directionToHome;
-      //Flightdirection
+      /**Flightdirection */
       HoTTV4GPSModule.flightDirection = MultiHoTTModule.GPS_flightDirection;
       
-      //VARIO  noch nicht implementier, in Zukunft mittels BMP085
+      //VARIO  not implemented yet, should be a BMP085
       //m/s
       HoTTV4GPSModule.resolutionLow = MultiHoTTModule.GPS_distanceToHome & 0x00FF;
       HoTTV4GPSModule.resolutionHigh = MultiHoTTModule.GPS_distanceToHome >> 8;
       //m/3s
       HoTTV4GPSModule.unknow1 = MultiHoTTModule.GPS_flightDirection;
+      
+      HoTTV4GPSModule.alarmTone = MultiHoTTModule.GPS_alarmTone;
       
     } else {
       HoTTV4GPSModule.GPS_fix = 0x20; // Displays a ' ' to show nothing or clear the old value
@@ -103,17 +104,22 @@ static void hottV4SerialWrite(uint8_t c) {
     HoTTV4GPSModule.sensorTextID = HOTTV4_GPS_SENSOR_TEXT_ID;
     HoTTV4GPSModule.endByte = 0x7D;
     /** ### */
-
-    /** Reset alarms */
-    HoTTV4GPSModule.alarmTone = 0x0;
-    HoTTV4GPSModule.alarmInverse1 = 0x0;
-
+    
     hottV4GPSUpdate();
+
+    if (is_set_home == 0)
+    {
+      HoTTV4GPSModule.alarmTone = 0x08; //alarm tone if no fix
+	  toggle_LED(); 					//Let the led blink
+    }else
+    {
+      HoTTV4GPSModule.alarmTone = 0x0;
+    }
 
     // Clear output buffer
     memset(&outBuffer, 0, sizeof(outBuffer));
 
-    // Copy EAM data to output buffer
+    // Copy GPS data to output buffer
     memcpy(&outBuffer, &HoTTV4GPSModule, kHoTTv4BinaryPacketSize);
 
     // Send data from output buffer
