@@ -42,7 +42,7 @@ static void hottV4SerialWrite(uint8_t c) {
     HoTTV4GPSModule.GPSNumSat=MultiHoTTModule.GPS_numSat;
     if (MultiHoTTModule.GPS_fix > 0) {
       /** GPS fix */
-      HoTTV4GPSModule.GPS_fix = 0x66; // Displays a 'f' for fix
+      HoTTV4GPSModule.GPS_fix = 0x33; // Dgps: '0x44' 2D = '0x32' 3D = '0x33' nofix = '0x2d'
       //latitude
       HoTTV4GPSModule.LatitudeNS=(MultiHoTTModule.GPS_latitude<0);
       uint8_t deg = MultiHoTTModule.GPS_latitude / 100000;
@@ -90,7 +90,7 @@ static void hottV4SerialWrite(uint8_t c) {
       HoTTV4GPSModule.alarmTone = MultiHoTTModule.GPS_alarmTone;
       
     } else {
-      HoTTV4GPSModule.GPS_fix = 0x20; // Displays a ' ' to show nothing or clear the old value
+      HoTTV4GPSModule.GPS_fix = 0x2d; // Displays a ' ' to show nothing or clear the old value
     }
   }
 
