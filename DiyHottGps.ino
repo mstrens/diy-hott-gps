@@ -31,6 +31,7 @@ struct {
   uint16_t GPS_distanceToHome;
   uint8_t  GPS_directionToHome;
   uint8_t  GPS_alarmTone;
+  int32_t altitude;
   
 } MultiHoTTModule;
 
