@@ -7,6 +7,9 @@
 #include "SoftwareSerial.h"
 #include <avr/io.h> 
 #include <TinyGPS.h> 
+
+#define Vario
+
 TinyGPS gps; 
 
 float HOME_LAT = 0, HOME_LON = 0;
@@ -49,6 +52,10 @@ void setup() {
   
   is_set_home = 0;
 
+  #ifdef Vario
+	setupAltitude();
+  #endif
+  
   hottV4Setup();
   
 }
@@ -128,6 +135,10 @@ void loop() {
    
  }
 
+   #ifdef Vario
+	readAltitude();
+  #endif
+ 
   // send data
   hottV4SendTelemetry();
 }
