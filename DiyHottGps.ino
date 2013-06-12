@@ -1,7 +1,7 @@
 /**
  * DIY-HOTT-GPS is a standalone Arduino based Application that acts 
  * as a HoTTv4 capable device to transmit GPS/Vario information. 
- * Code contains party by Oliver Bayer, Carsten Giesen, Jochen Boenig and Stefan Muerzl 04/2013
+ * Code contains parts by Oliver Bayer, Carsten Giesen, Jochen Boenig and Stefan Muerzl 04/2013
  */
 
 #include "SoftwareSerial.h"

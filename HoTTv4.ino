@@ -7,6 +7,11 @@
 #define OFFSET_M3S 120
 
 static uint8_t outBuffer[173];
+
+static int32_t m1s = 0;
+static int32_t m3s = 0;
+static int32_t m10s = 0;
+
 int16_t altitude = 0;
 
 SoftwareSerial hottV4Serial(HOTTV4_RXTX , HOTTV4_RXTX);
@@ -226,7 +231,6 @@ static void updateVarioAltitude() {
       HoTTV4VarioModule.alarmInverse |= 0x2; // Invert max altitude 
     }
   }
-  Serial.println(altitude);
   HoTTV4VarioModule.altitude = OFFSET_ALTITUDE + altitude; 
   HoTTV4VarioModule.maxAltitude = maxAltitude;
   HoTTV4VarioModule.minAltitude = minAltitude;  
@@ -236,7 +240,7 @@ static void updateVarioAltitude() {
  * Sends HoTTv4 capable VARIO telemetry frame.
  */
 static void hottV4SendVARIO() {
-  /** Minimum data set for EAM */
+  /** Minimum data set for Vario */
   HoTTV4VarioModule.startByte = 0x7C;
   HoTTV4VarioModule.sensorID = HOTTV4_VARIO_SENSOR_ID;
   HoTTV4VarioModule.sensorTextID = HOTTV4_VARIO_SENSOR_TEXT_ID;
