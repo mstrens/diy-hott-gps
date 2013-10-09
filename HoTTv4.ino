@@ -63,7 +63,7 @@ static void hottV4SerialWrite(uint8_t c) {
       HoTTV4GPSModule.LatitudeMinHigh = degMin >> 8;
       HoTTV4GPSModule.LatitudeSecLow = sec;
       HoTTV4GPSModule.LatitudeSecHigh = sec >> 8;
-      //latitude
+      //longitude
       HoTTV4GPSModule.longitudeEW=(MultiHoTTModule.GPS_longitude<0);
       deg = MultiHoTTModule.GPS_longitude / 100000;
       sec = (MultiHoTTModule.GPS_longitude - (deg * 100000)) * 6;
