@@ -8,9 +8,10 @@
 
 static uint8_t outBuffer[173];
 
-static int32_t m1s = 0;
+/*static int32_t m1s = 0;
 static int32_t m3s = 0;
 static int32_t m10s = 0;
+*/
 
 int16_t altitude = 0;
 
@@ -45,6 +46,7 @@ static inline void hottV4EnableTransmitterMode() {
 static void hottV4SerialWrite(uint8_t c) {
   hottV4Serial.write(c);
 }
+
 
   static void hottV4GPSUpdate() {
     //number of Satelites
@@ -137,7 +139,7 @@ static void hottV4SerialWrite(uint8_t c) {
 
   /**
  * Updates m1s, m3s, and m10s inclination for VARIO.
- */
+
 static void updateVarioInclination() {
   static uint32_t now_1 = 0;
   static uint32_t now_3 = 0;
@@ -202,6 +204,7 @@ static void updateVarioInclination() {
   HoTTV4VarioModule.m3s = 30000 + m3s;
   HoTTV4VarioModule.m10s = 30000 + m10s;
 }
+*/
 
 /**
  * Seconds since start
@@ -212,7 +215,6 @@ static uint32_t seconds() {
 
 /**
  * Updates height over ground, max. height over ground, and min. height over ground for VARIO.
- */
 static void updateVarioAltitude() {
   static int16_t maxAltitude = OFFSET_ALTITUDE;
   static int16_t minAltitude = OFFSET_ALTITUDE;
@@ -235,17 +237,17 @@ static void updateVarioAltitude() {
   HoTTV4VarioModule.maxAltitude = maxAltitude;
   HoTTV4VarioModule.minAltitude = minAltitude;  
 }
-  
+ */ 
+ 
 /**
- * Sends HoTTv4 capable VARIO telemetry frame.
- */
+ Sends HoTTv4 capable VARIO telemetry frame.
 static void hottV4SendVARIO() {
-  /** Minimum data set for Vario */
+   Minimum data set for Vario 
   HoTTV4VarioModule.startByte = 0x7C;
   HoTTV4VarioModule.sensorID = HOTTV4_VARIO_SENSOR_ID;
   HoTTV4VarioModule.sensorTextID = HOTTV4_VARIO_SENSOR_TEXT_ID;
   HoTTV4VarioModule.endByte = 0x7D;
-  /** ### */
+
   
   updateVarioAltitude();
   updateVarioInclination();
@@ -258,7 +260,8 @@ static void hottV4SendVARIO() {
   
   // Send data from output buffer
   hottV4SendData(outBuffer, kHoTTv4BinaryPacketSize);
-}
+}*/
+
 
  /* Expects an array of at least size bytes. All bytes till size will be transmitted
  * to the HoTT capable receiver. Last byte will always be treated as checksum and is
@@ -325,9 +328,9 @@ void hottV4SendTelemetry() {
             hottV4_state = IDLE;
         break;
 		
-		case HOTTV4_VARIO_SENSOR_ID:
-            hottV4SendVARIO();
-            hottV4_state = IDLE;
+	    case HOTTV4_VARIO_SENSOR_ID:
+            //hottV4SendVARIO();
+            //hottV4_state = IDLE;
         break;
             
            default:

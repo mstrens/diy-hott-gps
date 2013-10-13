@@ -8,7 +8,7 @@
 #include <avr/io.h> 
 #include <TinyGPS.h> 
 
-#define Vario
+//#define Vario
 
 TinyGPS gps; 
 
@@ -45,10 +45,12 @@ void setup() {
   pinMode(LED, OUTPUT);
   delay(200);
 
-  Serial.begin(57600);
+  Serial.begin(9600);  // <<== Enter here your default BAUD RATE FOR GPS
   delay(200);
-  //Serial.println("$PMTK300,250,0,0,0,0*2A");  //   init GPS
-  delay(100);
+  Serial.println("$PMTK251,57600*2C"); //Set to 57600baud
+  Serial.begin(57600);
+  Serial.println("$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"); //Set RMC and GGA only
+  Serial.println("$PMTK220,200*2C");  //   set to 5Hz
   
   is_set_home = 0;
 
@@ -110,7 +112,7 @@ void loop() {
    }
    
    //set homeposition
-   if (is_set_home == 0 && numsat >= 5)  // we need more than 5 sats
+   if (is_set_home == 0 && numsat >= 6)  // we need more than 6 sats
    {
        
        HOME_LAT = flat;
