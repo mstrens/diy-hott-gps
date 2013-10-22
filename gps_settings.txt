@@ -1,0 +1,8 @@
+$PMTK390,0,5,38400,0,1,0,0,0,1,0,0,68,2,9600*31        	- to Flash
+
+$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28       - Sätze
+$PMTK220,200*2C						- Updaterate
+$PMTK251,38400*27					- Baudrate
+$PMTK313,1*2E						- SBAS
+$PMTK301,2*2E 						- SBAS
+$PMTK330,68*10						- Datum (BERLIN, Wien)

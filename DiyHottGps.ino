@@ -49,8 +49,9 @@ void setup() {
   delay(200);
   Serial.println("$PMTK251,57600*2C"); //Set to 57600baud
   Serial.begin(57600);
-  Serial.println("$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"); //Set RMC and GGA only
-  Serial.println("$PMTK220,200*2C");  //   set to 5Hz
+  delay(200);
+  Serial.println("$PMTK314,0,5,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"); //Set RMC and GGA 5Hz
+  Serial.println("$PMTK220,200*2C");  //   set to 5Hz Refreshrate
   
   is_set_home = 0;
 
