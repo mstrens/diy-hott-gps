@@ -1,7 +1,8 @@
 /**
  * DIY-HOTT-GPS is a standalone Arduino based Application that acts 
  * as a HoTTv4 capable device to transmit GPS/Vario information. 
- * Code contains parts by Oliver Bayer, Carsten Giesen, Jochen Boenig and Stefan Muerzl 04/2013
+ * Code contains parts by Oliver Bayer, Carsten Giesen, Jochen Boenig and Stefan Muerzl 11/2013
+ * tested by Robert aka Skyfighter THANKS!
  */
 
 #include "SoftwareSerial.h"
@@ -43,16 +44,7 @@ struct {
 void setup() {
   
   pinMode(LED, OUTPUT);
-  delay(200);
-
-  Serial.begin(9600);  // <<== Enter here your default BAUD RATE FOR GPS
-  delay(200);
-  Serial.println("$PMTK251,57600*2C"); //Set to 57600baud
-  Serial.begin(57600);
-  delay(200);
-  Serial.println("$PMTK314,0,5,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28"); //Set RMC and GGA 5Hz
-  Serial.println("$PMTK220,200*2C");  //   set to 5Hz Refreshrate
-  
+  Serial.begin(38400);
   is_set_home = 0;
 
   #ifdef Vario
