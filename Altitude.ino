@@ -70,7 +70,7 @@ static float filter(float altitude) {
   return avgAltitude;
 }
 
-void readAltitude() {
+float readAltitude() {
   static uint8_t cnt = 0;
 
   float temperature = bmp085GetTemperature(bmp085ReadUT()); //MUST be called first
@@ -87,7 +87,7 @@ void readAltitude() {
 
   float filteredAlt = filter(altitude);
   // Altitude in cm
-  MultiHoTTModule.altitude = 100 * filter(altitude);
+  return filteredAlt * 100;
 }
 
 // Stores all of the bmp085's calibration values into global variables

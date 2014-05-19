@@ -46,7 +46,25 @@ static inline void hottV4EnableTransmitterMode() {
 static void hottV4SerialWrite(uint8_t c) {
   hottV4Serial.write(c);
 }
+ 
+void convert_to_degrees_minutes_seconds(float val, int *deg_sec, int *degMin){
+  int16_t deg = (int)val;
+  double sec = (val - deg);
+  int8_t min = (int) (sec * 60);
+  
+  *deg_sec = abs((int) (((sec * 60) - min) * 10000.0f));
+  *degMin = abs((int)(deg * 100 + min));
+}
 
+/*tinygps FORMAT dd.ddddd
+void convert_to_degrees_minutes_seconds(float val, int *deg_sec, int *degMin){
+  int16_t deg = (int)val;		//extract degrees
+  float sec = (val - deg);		
+  int8_t min = (int) (sec * 60);//extract decimal deg
+  
+  *deg_sec = abs((int) (((sec * 60) - min) * 100000.0f));
+  *degMin = abs((int)(deg * 100 + min));
+}*/
 
   static void hottV4GPSUpdate() {
     //number of Satelites
@@ -54,28 +72,28 @@ static void hottV4SerialWrite(uint8_t c) {
     if (MultiHoTTModule.GPS_fix > 0) {
       /** GPS fix */
       HoTTV4GPSModule.GPS_fix = 0x33; // Dgps: '0x44' 2D = '0x32' 3D = '0x33' nofix = '0x2d'
+      
+      int16_t deg_sec;
+      int16_t degMin;
+	  
       //latitude
-      HoTTV4GPSModule.LatitudeNS=(MultiHoTTModule.GPS_latitude<0);
-      uint8_t deg = MultiHoTTModule.GPS_latitude / 100000;
-      uint32_t sec = (MultiHoTTModule.GPS_latitude - (deg * 100000)) * 6;
-      uint8_t min = sec / 10000;
-      sec = sec % 10000;
-      uint16_t degMin = (deg * 100) + min;
+      convert_to_degrees_minutes_seconds(MultiHoTTModule.GPS_latitude, &deg_sec, &degMin);
+      HoTTV4GPSModule.LatitudeNS=(MultiHoTTModule.GPS_latitude<0);  
       HoTTV4GPSModule.LatitudeMinLow = degMin;
       HoTTV4GPSModule.LatitudeMinHigh = degMin >> 8;
-      HoTTV4GPSModule.LatitudeSecLow = sec;
-      HoTTV4GPSModule.LatitudeSecHigh = sec >> 8;
+      HoTTV4GPSModule.LatitudeSecLow = deg_sec;
+      HoTTV4GPSModule.LatitudeSecHigh = deg_sec >> 8;
+	  
+	  
       //longitude
+      convert_to_degrees_minutes_seconds(MultiHoTTModule.GPS_longitude, &deg_sec, &degMin);
       HoTTV4GPSModule.longitudeEW=(MultiHoTTModule.GPS_longitude<0);
-      deg = MultiHoTTModule.GPS_longitude / 100000;
-      sec = (MultiHoTTModule.GPS_longitude - (deg * 100000)) * 6;
-      min = sec / 10000;
-      sec = sec % 10000;
-      degMin = (deg * 100) + min;
       HoTTV4GPSModule.longitudeMinLow = degMin;
       HoTTV4GPSModule.longitudeMinHigh = degMin >> 8;
-      HoTTV4GPSModule.longitudeSecLow = sec;
-      HoTTV4GPSModule.longitudeSecHigh = sec >> 8;
+      HoTTV4GPSModule.longitudeSecLow = deg_sec;
+      HoTTV4GPSModule.longitudeSecHigh = deg_sec >> 8;
+	  
+	  
       /** GPS Speed in km/h */
       uint16_t speed = MultiHoTTModule.GPS_speed;  // in km/h
       HoTTV4GPSModule.GPSSpeedLow = speed & 0x00FF;
