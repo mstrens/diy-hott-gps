@@ -25,8 +25,8 @@ struct {
   
   uint8_t  GPS_fix;
   uint8_t  GPS_numSat;
-  uint32_t GPS_latitude;
-  uint32_t GPS_longitude;
+  float GPS_latitude;
+  float GPS_longitude;
   uint16_t GPS_altitude;
   uint16_t GPS_speed;
   uint16_t GPS_Vario1;
@@ -89,8 +89,11 @@ void loop() {
    gps.get_position(&lat, &lon, &age);
    gps.f_get_position(&flat, &flon);
    gps.get_datetime(&dat, &tim, &age);
-   //alt = (int) gps.f_altitude();
-   alt =  gps.altitude()/100;
+   #ifdef Vario
+	  alt = readAltitude();
+   #else
+	  alt =  gps.altitude()/100;
+   #endif
    numsat = gps.satellites(); 
    ui_course = gps.course()/100;
    speed_k = gps.speed(); 
@@ -110,7 +113,7 @@ void loop() {
        
        HOME_LAT = flat;
        HOME_LON = flon;
-       start_height = alt;	   //in future height will be set with BMP085
+       //start_height = alt;	   //in future height will be set with BMP085
 
 	   if ((gps.altitude()/100) != 9999999)	
 	   {
@@ -120,10 +123,10 @@ void loop() {
    
    MultiHoTTModule.GPS_fix       = 1;       
    MultiHoTTModule.GPS_numSat    = numsat;  //Satellites in view
-   MultiHoTTModule.GPS_latitude  = lat;     //Geograph. Latitude
-   MultiHoTTModule.GPS_longitude = lon;     //Geograph. Longitude
+   MultiHoTTModule.GPS_latitude  = flat;     //Geograph. Latitude
+   MultiHoTTModule.GPS_longitude = flon;     //Geograph. Longitude
    MultiHoTTModule.GPS_speed     = (speed_k * 1852) / 100000; // from GPS in Knots*100 -> km/h
-   MultiHoTTModule.GPS_altitude = alt+500-start_height;  // from GPS in cm, +500m Offset for Hott   
+   MultiHoTTModule.GPS_altitude = alt+500//-start_height;  // from GPS in cm, +500m Offset for Hott   
    MultiHoTTModule.GPS_distanceToHome = gps.distance_between(flat, flon, HOME_LAT, HOME_LON); //calculation of distance to home
    MultiHoTTModule.GPS_directionToHome = gps.course_to(HOME_LAT, HOME_LON, lat, lon) / 2; //calculation of bearing from home to plane
    MultiHoTTModule.GPS_flightDirection = ui_course/2;   //flightcourse of the plane
