@@ -7,7 +7,7 @@
 
 #include "SoftwareSerial.h"
 #include <avr/io.h> 
-#include <TinyGPS.h> 
+#include <TinyGPS++.h> 
 
 //#define Vario
 
@@ -81,9 +81,7 @@ void loop() {
   bool newdata = false;
   uint32_t now = millis();  
   
- if (feedgps()) newdata = true;
- 
- if ( newdata == true)
+ if (feedgps())
  {
 
    gps.get_position(&lat, &lon, &age);
@@ -130,13 +128,13 @@ void loop() {
    MultiHoTTModule.GPS_distanceToHome = gps.distance_between(flat, flon, HOME_LAT, HOME_LON); //calculation of distance to home
    MultiHoTTModule.GPS_directionToHome = gps.course_to(HOME_LAT, HOME_LON, lat, lon) / 2; //calculation of bearing from home to plane
    MultiHoTTModule.GPS_flightDirection = ui_course/2;   //flightcourse of the plane
-   
+   // send data
+   hottV4SendTelemetry();
  }
 
    #ifdef Vario
 	readAltitude();
   #endif
  
-  // send data
-  hottV4SendTelemetry();
+
 }
