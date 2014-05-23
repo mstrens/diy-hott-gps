@@ -7,7 +7,7 @@
 
 #include "SoftwareSerial.h"
 #include <avr/io.h> 
-#include <TinyGPS++.h> 
+#include <TinyGPS.h> 
 
 //#define Vario
 
@@ -124,7 +124,7 @@ void loop() {
    MultiHoTTModule.GPS_latitude  = flat;     //Geograph. Latitude
    MultiHoTTModule.GPS_longitude = flon;     //Geograph. Longitude
    MultiHoTTModule.GPS_speed     = (speed_k * 1852) / 100000; // from GPS in Knots*100 -> km/h
-   MultiHoTTModule.GPS_altitude = alt+500//-start_height;  // from GPS in cm, +500m Offset for Hott   
+   MultiHoTTModule.GPS_altitude = alt+500;//-start_height;  // from GPS in cm, +500m Offset for Hott   
    MultiHoTTModule.GPS_distanceToHome = gps.distance_between(flat, flon, HOME_LAT, HOME_LON); //calculation of distance to home
    MultiHoTTModule.GPS_directionToHome = gps.course_to(HOME_LAT, HOME_LON, lat, lon) / 2; //calculation of bearing from home to plane
    MultiHoTTModule.GPS_flightDirection = ui_course/2;   //flightcourse of the plane
