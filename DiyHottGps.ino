@@ -16,11 +16,20 @@ TinyGPS gps;
 float HOME_LAT = 0, HOME_LON = 0;
 float start_height = 0;
 
-bool feedgps();  
 bool is_set_home = 0;
 uint32_t last = 0;
 int p_alt[4]={0,0,0,0};
 
+//Variables for GPS-Functions
+unsigned long speed_k; // Knots * 100
+long lat, lon;
+float flat, flon, alt;
+unsigned long age, dat, tim, ui_course;
+//uint16_t alt;
+unsigned int numsat; 
+bool newdata = false;
+uint32_t now = millis(); 
+  
 struct {
   
   uint8_t  GPS_fix;
@@ -41,6 +50,8 @@ struct {
 
 #define LED 13
 
+  
+
 void setup() {
   
   pinMode(LED, OUTPUT);
@@ -55,35 +66,14 @@ void setup() {
   
 }
 
-bool feedgps()
-{
-  while (Serial.available())
-  {
-    if (gps.encode(Serial.read()))
-      return true;
-  }
-  return false;
-}
-
 void toggle_LED(){
  digitalWrite(LED, !digitalRead(LED)); 
 }
 
 void loop() {
 
-  //Variables for GPS-Functions
-  unsigned long speed_k; // Knots * 100
-  long lat, lon;
-  float flat, flon, alt;
-  unsigned long age, dat, tim, ui_course;
-  //uint16_t alt;
-  unsigned int numsat; 
-  bool newdata = false;
-  uint32_t now = millis();  
-  
- if (feedgps())
- {
-
+   smartdelay(200);
+	
    gps.get_position(&lat, &lon, &age);
    gps.f_get_position(&flat, &flon);
    gps.get_datetime(&dat, &tim, &age);
@@ -130,11 +120,21 @@ void loop() {
    MultiHoTTModule.GPS_flightDirection = ui_course/2;   //flightcourse of the plane
    // send data
    hottV4SendTelemetry();
- }
+ 
 
    #ifdef Vario
 	readAltitude();
   #endif
  
 
+}
+
+void smartdelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do 
+  {
+    while (Serial.available())
+      gps.encode(Serial.read());
+  } while (millis() - start < ms);
 }
